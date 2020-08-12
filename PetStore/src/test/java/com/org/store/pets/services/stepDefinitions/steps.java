@@ -29,7 +29,7 @@ public class steps {
     PetStatus petStatus;
     HttpResponse<String> response;
     String petName;
-    int availabilityCount=0;
+    int availabilityCount = 0;
     WireMockClient wireMockClient;
 
     @Given("PetsStore service response code is {string}")
@@ -53,8 +53,22 @@ public class steps {
 
     @And("fetch the pets status with the name {string}")
     public void fetchThePetsStatusWithTheName(String name) {
-        LOGGER.info("wiremockResponse: {}",response.body());
-        petName=name;
+        LOGGER.info("Real Service Response: {}", response.body());
+        petName = name;
+        JSONArray ary = new JSONArray(response.body());
+        for (int i = 0; i < ary.length(); ++i) {
+            JSONObject obj = ary.getJSONObject(i);
+            if (obj.getString("name").equalsIgnoreCase(petName)
+                    && obj.getString("status").equalsIgnoreCase(PetStatus.AVAILABLE.getStatus())) {
+                availabilityCount++;
+            }
+        }
+    }
+
+    @Then("fetch the pets status from mock with the name {string}")
+    public void fetchPetStatusFromMock(String name) {
+        LOGGER.info("wiremockResponse: {}", response.body());
+        petName = name;
         JSONArray ary = new JSONArray(response.body());
         for (int i = 0; i < ary.length(); ++i) {
             JSONObject obj = ary.getJSONObject(i);
@@ -67,14 +81,14 @@ public class steps {
 
     @Then("display number of pets available")
     public void validateNumberOfPetsAvailable() {
-        LOGGER.info(String.format("Number of %s Available in Pet store: %s",petName,availabilityCount));
+        LOGGER.info(String.format("Number of %s Available in Pet store: %s", petName, availabilityCount));
     }
 
 
     @Given("PetsStore service is {string}")
     public void petsStoreService(String realServiceStatus) {
-        if(realServiceStatus.equalsIgnoreCase("unavailable")){
-            wireMockClient= new WireMockClient();
+        if (realServiceStatus.equalsIgnoreCase("unavailable")) {
+            wireMockClient = new WireMockClient();
             wireMockClient.petsStoreStubbing();
 
         }
@@ -86,7 +100,7 @@ public class steps {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(WIREMOCK_PETS_STATUS_URL))
                 .build();
-        response=client.send(request, HttpResponse.BodyHandlers.ofString());
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
     }
 }
