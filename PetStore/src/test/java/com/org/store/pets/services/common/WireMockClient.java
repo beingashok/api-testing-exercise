@@ -10,11 +10,6 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMoc
 public class WireMockClient {
 
     public WireMockClient() {
-       /* server= new WireMockServer(wireMockConfig().port(65035));
-        server.start();
-        int port= server.port();
-        WireMock.configureFor("localhost", port);
-        wireMockService=WireMockService.connect("http://localhost:"+port);*/
         WireMockServer wireMockServer = new WireMockServer(wireMockConfig());
         wireMockServer.start();
     }
