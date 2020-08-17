@@ -1,8 +1,6 @@
 package com.org.store.pets.services.utils;
 
-import lombok.Getter;
 
-@Getter
 public enum PetStatus {
     AVAILABLE("available"),
     PENDING("pending"),
@@ -14,4 +12,7 @@ public enum PetStatus {
         this.status=status;
     }
 
+    public String getStatus() {
+        return status;
+    }
 }

@@ -14,13 +14,20 @@ dependencies {
     compile group: 'io.cucumber', name: 'cucumber-java', version: '6.4.0'
     testCompile group: 'io.cucumber', name: 'cucumber-junit', version: '6.4.0'
     testCompile group: 'io.cucumber', name: 'cucumber-picocontainer', version: '6.4.0'
-    testCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
     testCompile group: 'org.slf4j', name: 'slf4j-log4j12', version: '2.0.0-alpha1'
     compile group: 'org.json', name: 'json', version: '20200518'
     testImplementation("com.github.tomakehurst:wiremock-jre8:2.25.1")
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
 
-
-
-
-
+}
+task cucumber() {
+    dependsOn assemble, ':build', compileTestJava
+    doLast {
+        javaexec {
+            classpath = sourceSets.test.runtimeClasspath
+            main = 'org.junit.runner.JUnitCore'
+            args = ['com.org.store.pets.services.CucumberRunner']
+        }
+    }
 }
